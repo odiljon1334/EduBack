@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import {InjectConnection, MongooseModule} from '@nestjs/mongoose';
-import { log } from 'console';
 import {Connection} from 'mongoose';
 
 @Module({
