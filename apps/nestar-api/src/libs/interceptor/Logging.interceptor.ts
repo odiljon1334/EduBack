@@ -1,17 +1,43 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
+import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from "@nestjs/common";
+import { GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
+import { stringify } from "querystring";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-    intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
-        console.log("Before...");
+    private readonly logger: Logger = new Logger();
 
-        const now = Date.now();
-        return next
+
+    public intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
+        const recordTime = Date.now();
+        const requestType = context.getType<GqlContextType>();
+        
+        if (requestType === "http") {
+            /** Develop if needed! */ 
+        } else if (requestType === 'graphql') {
+            /** (1) Print Request */
+            const gqlContext = GqlExecutionContext.create(context);
+            this.logger.log(`Type ${this.stringify(gqlContext.getContext().req.body)}`, 'REQUEST');
+
+             /** (2) Errors handling via GraphQL */
+              /** (3) No Errors giving Response below */
+            return next
         .handle()
         .pipe(
-            tap(() => console.log(`Afetr... +${Date.now() - now}ms`)),
+            tap((context) => {
+                const responseTime = Date.now() - recordTime;
+                this.logger.log(
+                    `${this.stringify(context)} - \x1b[33m +${responseTime}ms \n\n \x1b[0m`,
+                    'RESPONSE',
+                );
+            }),
         );
+        }        
+    }
+
+    private stringify(context: ExecutionContext): string {
+        console.log(typeof context);
+        return JSON.stringify(context).slice(0, 75);
     }
 }
