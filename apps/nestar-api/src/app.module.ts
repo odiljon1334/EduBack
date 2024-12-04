@@ -17,6 +17,7 @@ import { T } from './libs/types/common';
       playground: true,
       uploads: false,
       autoSchemaFile: true,
+      // configuration
       formatError: (error: T) => {
         console.log("Error:", error);
         const garphQLFormattedError = {
