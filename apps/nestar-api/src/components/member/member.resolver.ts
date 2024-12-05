@@ -44,7 +44,7 @@ export class MemberResolver {
     }
 
     @Roles(MemberType.USER, MemberType.AGENT)
-    @UseGuards(AuthGuard)
+    @UseGuards(RolesGuard)
     @Query(() => String)
     public async checkAuthRoles(@AuthMember() authMember: Member): Promise<string> {
         console.log('Query: checkAuthRoles');
