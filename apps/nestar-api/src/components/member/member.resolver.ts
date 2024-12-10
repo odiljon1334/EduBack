@@ -103,14 +103,17 @@ public async imageUploader(
 { createReadStream, filename, mimetype }: FileUpload,
 @Args('target') target: String,
 ): Promise<string> {
-	console.log('Mutation: imageUploader');
+console.log('Mutation: imageUploader');
 
-	if (!filename) throw new Error(Message.UPLOAD_FAILED);
+if (!filename) throw new Error(Message.UPLOAD_FAILED);
+    
 const validMime = validMimeTypes.includes(mimetype);
+
 if (!validMime) throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
 
 const imageName = getSerialForImage(filename);
 const url = `uploads/${target}/${imageName}`;
+
 const stream = createReadStream();
 
 const result = await new Promise((resolve, reject) => {
