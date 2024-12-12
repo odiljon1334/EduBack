@@ -154,7 +154,12 @@ export class MemberService {
         
         const {_id, targetKey, modifier} = input;
         return await this.memberModel
-        .findOneAndUpdate(_id, {$inc: {[targetKey]: modifier}}, {new: true})
+        .findOneAndUpdate(
+            _id, 
+            {
+                $inc: { [targetKey]: modifier }
+            }, 
+            {new: true})
         .exec();
     }
 }
