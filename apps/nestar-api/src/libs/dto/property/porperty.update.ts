@@ -73,7 +73,6 @@ export class PropertyUpdate {
 
     deletedAt?: Date;
     
-    @IsOptional()
     @Field(()=> Date, {nullable: true})
     constructedAt?: Date;
 
