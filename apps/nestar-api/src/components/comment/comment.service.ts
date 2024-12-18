@@ -5,5 +5,5 @@ import { Comment } from '../../libs/dto/comment/comment';
 
 @Injectable()
 export class CommentService {
-    constructor(@InjectModel('Comments') private readonly commentService: Model<Comment>) {}
+    constructor(@InjectModel('Comment') private readonly commentService: Model<Comment>) {}
 }
