@@ -10,6 +10,7 @@ import { MemberUpdate } from '../../libs/dto/member/member.update';
 import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewService } from '../view/view.service';
 import { ViewGroup } from '../../libs/enums/view.enum';
+import { CommentUpdate } from '../../libs/dto/comment/comment.update';
 
 @Injectable()
 export class MemberService {
@@ -154,7 +155,7 @@ export class MemberService {
         
         const {_id, targetKey, modifier} = input;
         return await this.memberModel
-        .findOneAndUpdate(
+        .findByIdAndUpdate(
             _id, 
             {
                 $inc: { [targetKey]: modifier }
