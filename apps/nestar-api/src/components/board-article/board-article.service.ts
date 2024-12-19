@@ -60,7 +60,8 @@ export class BoardArticleService {
                 targetBoardArticle.articleViews++;
             }
 
-            // meLiked
+            const likeInput = {memberId: memberId, likeRefId: articleId, likeGroup: LikeGroup.ARTICLE};
+            targetBoardArticle.meLiked = await this.likeService.checkLikeExistence(likeInput);
         }
         targetBoardArticle.memberData = await this.memberService.getMember(null, targetBoardArticle.memberId);
         return targetBoardArticle;
@@ -102,7 +103,6 @@ export class BoardArticleService {
         if(input.search?.memberId) {
             match.memberId = shapeIntoMongoObjectId(input.search.memberId);
         }
-        console.log('match:', match);
 
         const result = await this.boardArticleModel
         .aggregate([
