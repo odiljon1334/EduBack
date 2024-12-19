@@ -52,6 +52,7 @@ export class CommentService {
                             targetKey: 'memberComments',
                             modifier: 1,
                         });
+                        default:
                         break;
         }
         if(!result) throw new InternalServerErrorException(Message.CREATE_FAILED);
