@@ -9,7 +9,7 @@ import { StatisticModifier, T } from '../../libs/types/common';
 import { PropertyStatus } from '../../libs/enums/property.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
-import { lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 import { PropertyUpdate } from '../../libs/dto/property/porperty.update';
 import * as moment from 'moment';
 import { LikeService } from '../like/like.service';
@@ -115,7 +115,7 @@ export class PropertyService {
                     list: [
                         {$skip: (input.page - 1) * input.limit},
                         {$limit: input.limit},
-                        // meliked
+                        lookupAuthMemberLiked(memberId),
                         lookupMember,
                         {$unwind: '$memberData'},
                     ],
