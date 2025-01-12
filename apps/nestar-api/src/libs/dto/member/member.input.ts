@@ -24,6 +24,10 @@ export class MemberInput {
     @IsOptional()
     @Field(() => MemberType, {nullable: true})
     memberType?: MemberType;
+
+    @IsOptional()
+    @Field(() => String, {nullable: true})
+    memberImage: string;
     
     @IsOptional()
     @Field(() => MemberAuthType, {nullable: true})
