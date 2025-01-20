@@ -295,7 +295,7 @@ export class PropertyService {
 		const { _id, targetKey, modifier } = input;
 		return await this.propertyModel
 			.findOneAndUpdate(
-				_id,
+				{ _id },
 				{
 					$inc: { [targetKey]: modifier },
 				},
