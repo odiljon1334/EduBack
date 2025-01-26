@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Properties, Property } from '../../libs/dto/property/property';
 import {
-	AgentPropertiesInquiery,
+	AgentPropertiesInquiry,
 	AllPropertiesInquiry,
 	OrdinaryInquiry,
 	PropertiesInquiry,
@@ -31,7 +31,7 @@ export class PropertyService {
 		private likeService: LikeService,
 	) {}
 
-	public async createPropety(input: PropertyInput): Promise<Property> {
+	public async createProperty(input: PropertyInput): Promise<Property> {
 		try {
 			const result = await this.propertyModel.create(input);
 			await this.memberService.memberStatsEditor({
@@ -171,7 +171,7 @@ export class PropertyService {
 		}
 	}
 
-	public async getAgentProperties(memberId: ObjectId, input: AgentPropertiesInquiery): Promise<Properties> {
+	public async getAgentProperties(memberId: ObjectId, input: AgentPropertiesInquiry): Promise<Properties> {
 		const { propertyStatus } = input.search;
 		if (propertyStatus === PropertyStatus.DELETE) throw new InternalServerErrorException(Message.NOT_ALLOWED_REQUEST);
 
