@@ -10,7 +10,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { MemberType } from '../../libs/enums/member.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
-import { getSerialForImage, shapeIntoMongoObjectId, validMimeTypes } from '../../libs/config';
+import { getSerialForFile, shapeIntoMongoObjectId, validMimeTypes } from '../../libs/config';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { createWriteStream } from 'fs';
 import { WithoutGuard } from '../auth/guards/without.guard';
@@ -22,6 +22,10 @@ export class MemberResolver {
 
 	@Mutation(() => Member)
 	public async signup(@Args('input') input: MemberInput): Promise<Member> {
+		console.log('input: =>', input);
+		if (!input.memberType && input.memberPosition) {
+			throw new Error(Message.PROVIDE_INSTRUCTOR_POSITION);
+		}
 		console.log('Mutation: signup');
 		return await this.memberService.signup(input);
 	}
@@ -40,7 +44,7 @@ export class MemberResolver {
 		return `Hi ${memberNick}`;
 	}
 
-	@Roles(MemberType.USER, MemberType.AGENT)
+	@Roles(MemberType.USER, MemberType.INSTRUCTOR)
 	@UseGuards(RolesGuard)
 	@Query(() => String)
 	public async checkAuthRoles(@AuthMember() authMember: Member): Promise<string> {
@@ -108,71 +112,39 @@ export class MemberResolver {
 
 	@UseGuards(AuthGuard)
 	@Mutation((returns) => String)
-	public async imageUploader(
+	public async fileUploader(
 		@Args({ name: 'file', type: () => GraphQLUpload })
 		{ createReadStream, filename, mimetype }: FileUpload,
-		@Args('target') target: String,
+		@Args('target') target: string,
 	): Promise<string> {
-		console.log('Mutation: imageUploader');
+		console.log('Mutation: fileUploader');
 
 		if (!filename) throw new Error(Message.UPLOAD_FAILED);
 
-		const validMime = validMimeTypes.includes(mimetype);
+		// ✅ MIME turini tekshiramiz
+		const isImage = validMimeTypes.images.includes(mimetype);
+		const isVideo = validMimeTypes.videos.includes(mimetype);
 
-		if (!validMime) throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
+		if (!isImage && !isVideo) {
+			throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
+		}
 
-		const imageName = getSerialForImage(filename);
-		const url = `uploads/${target}/${imageName}`;
+		// ✅ Fayl nomini generatsiya qilish
+		const fileName = getSerialForFile(filename);
+		const url = `uploads/${target}/${fileName}`;
+		console.log('url:', url);
 
+		// ✅ Faylni oqim orqali yozish
 		const stream = createReadStream();
-
 		const result = await new Promise((resolve, reject) => {
 			stream
 				.pipe(createWriteStream(url))
-				.on('finish', async () => resolve(true))
-				.on('error', () => reject(false));
+				.on('finish', () => resolve(true))
+				.on('error', (err) => reject(new Error(`File upload failed: ${err.message}`))); // ✅ Faqat Error otadi!
 		});
+
 		if (!result) throw new Error(Message.UPLOAD_FAILED);
 
 		return url;
-	}
-
-	@UseGuards(AuthGuard)
-	@Mutation((returns) => [String])
-	public async imagesUploader(
-		@Args('files', { type: () => [GraphQLUpload] })
-		files: Promise<FileUpload>[],
-		@Args('target') target: String,
-	): Promise<string[]> {
-		console.log('Mutation: imagesUploader');
-
-		const uploadedImages = [];
-		const promisedList = files.map(async (img: Promise<FileUpload>, index: number): Promise<Promise<void>> => {
-			try {
-				const { filename, mimetype, encoding, createReadStream } = await img;
-
-				const validMime = validMimeTypes.includes(mimetype);
-				if (!validMime) throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
-
-				const imageName = getSerialForImage(filename);
-				const url = `uploads/${target}/${imageName}`;
-				const stream = createReadStream();
-
-				const result = await new Promise((resolve, reject) => {
-					stream
-						.pipe(createWriteStream(url))
-						.on('finish', () => resolve(true))
-						.on('error', () => reject(false));
-				});
-				if (!result) throw new Error(Message.UPLOAD_FAILED);
-
-				uploadedImages[index] = url;
-			} catch (err) {
-				console.log('Error, file missing!');
-			}
-		});
-
-		await Promise.all(promisedList);
-		return uploadedImages;
 	}
 }

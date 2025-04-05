@@ -1,66 +1,82 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsIn, IsInt, IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
-import { PropertyLocation, PropertyStatus, PropertyType } from '../../enums/property.enum';
+import { IsIn, IsNotEmpty, IsOptional, Length, Min, ValidateNested } from 'class-validator';
+import { CourseCategory, CourseStatus, CourseType } from '../../enums/course.enum';
 import { ObjectId } from 'mongoose';
-import { availableOptions, availablePropertySorts } from '../../config';
+import { availableOptions, availableCourseSorts } from '../../config';
 import { Direction } from '../../enums/common.enum';
+import { Type } from 'class-transformer';
 
 @InputType()
-export class PropertyInput {
+export class LessonDto {
 	@IsNotEmpty()
-	@Field(() => PropertyType)
-	propertyType: PropertyType;
+	@Field(() => String)
+	lessonTitle: string;
 
 	@IsNotEmpty()
-	@Field(() => PropertyLocation)
-	propertyLocation: PropertyLocation;
+	@Field(() => String)
+	lessonVideo: string; // Videoga link
+
+	@IsNotEmpty()
+	@Field(() => Int)
+	lessonDuration: number;
+
+	@IsNotEmpty()
+	@Field(() => Int)
+	lessonOrder: number; // Modul ichida lessonlar tartib raqami
+
+	@IsOptional()
+	@Field(() => Boolean, { nullable: true })
+	completedLesson?: boolean;
+}
+
+@InputType('ModuleDTO')
+export class ModuleDto {
+	@IsNotEmpty()
+	@Field(() => String)
+	moduleTitle: string;
+
+	@IsNotEmpty()
+	@Field(() => Int)
+	moduleOrder: number;
+
+	@ValidateNested({ each: true })
+	@Field(() => [LessonDto])
+	@Type(() => LessonDto)
+	lessons: LessonDto[];
+}
+
+@InputType()
+export class CourseInput {
+	@IsNotEmpty()
+	@Field(() => CourseType)
+	courseType: CourseType;
+
+	@IsNotEmpty()
+	@Field(() => CourseCategory)
+	courseCategory: CourseCategory;
 
 	@IsNotEmpty()
 	@Length(5, 100)
 	@Field(() => String)
-	propertyAddress: string;
+	courseTitle: string;
 
 	@IsNotEmpty()
-	@Length(5, 100)
+	@Field(() => Int)
+	coursePrice: number;
+
+	@IsNotEmpty()
 	@Field(() => String)
-	propertyTitle: string;
-
-	@IsNotEmpty()
-	@Field(() => Int)
-	propertyPrice: number;
-
-	@IsNotEmpty()
-	@Field(() => Int)
-	propertySquare: number;
-
-	@IsNotEmpty()
-	@IsInt()
-	@Min(1)
-	@Field(() => Int)
-	propertyBeds: number;
-
-	@IsNotEmpty()
-	@IsInt()
-	@Min(1)
-	@Field(() => Int)
-	propertyRooms: number;
-
-	@IsNotEmpty()
-	@Field(() => [String])
-	propertyImages: string[];
+	courseImage: string;
 
 	@IsOptional()
 	@Length(5, 500)
 	@Field(() => String, { nullable: true })
-	propertyDesc?: string;
+	courseDesc?: string;
 
-	@IsOptional()
-	@Field(() => Boolean, { nullable: true })
-	propertyBarter?: boolean;
-
-	@IsOptional()
-	@Field(() => Boolean, { nullable: true })
-	propertyRent?: boolean;
+	@ValidateNested({ each: true })
+	@Field(() => [ModuleDto])
+	@IsNotEmpty()
+	courseModuls: ModuleDto[];
 
 	memberId: ObjectId;
 
@@ -78,44 +94,18 @@ export class PricesRange {
 }
 
 @InputType()
-export class SquaresRange {
-	@Field(() => Int)
-	start: number;
-
-	@Field(() => Int)
-	end: number;
-}
-
-@InputType()
-export class PeriodsRange {
-	@Field(() => Date)
-	start: Date;
-
-	@Field(() => Date)
-	end: Date;
-}
-
-@InputType()
 export class PISearch {
 	@IsOptional()
 	@Field(() => String, { nullable: true })
 	memberId?: ObjectId;
 
 	@IsOptional()
-	@Field(() => [PropertyLocation], { nullable: true })
-	locationList?: PropertyLocation[];
+	@Field(() => [CourseCategory], { nullable: true })
+	categoryList?: CourseCategory[];
 
 	@IsOptional()
-	@Field(() => [PropertyType], { nullable: true })
-	typeList?: PropertyType[];
-
-	@IsOptional()
-	@Field(() => [Int], { nullable: true })
-	roomsList?: number[];
-
-	@IsOptional()
-	@Field(() => [Int], { nullable: true })
-	bedsList?: number[];
+	@Field(() => [CourseType], { nullable: true })
+	typeList?: CourseType[];
 
 	@IsOptional()
 	@IsIn(availableOptions, { each: true })
@@ -123,24 +113,12 @@ export class PISearch {
 	options?: string[];
 
 	@IsOptional()
-	@Field(() => PricesRange, { nullable: true })
-	pricesRange?: PricesRange;
-
-	@IsOptional()
-	@Field(() => PeriodsRange, { nullable: true })
-	periodsRange?: PeriodsRange;
-
-	@IsOptional()
-	@Field(() => SquaresRange, { nullable: true })
-	squaresRange?: SquaresRange;
-
-	@IsOptional()
 	@Field(() => String, { nullable: true })
 	text?: string;
 }
 
 @InputType()
-export class PropertiesInquiry {
+export class CoursesInquiry {
 	@IsNotEmpty()
 	@Min(1)
 	@Field(() => Int)
@@ -152,7 +130,7 @@ export class PropertiesInquiry {
 	limit: number;
 
 	@IsOptional()
-	@IsIn(availablePropertySorts)
+	@IsIn(availableCourseSorts)
 	@Field(() => String, { nullable: true })
 	sort?: string;
 
@@ -168,12 +146,12 @@ export class PropertiesInquiry {
 @InputType()
 export class APISearch {
 	@IsOptional()
-	@Field(() => PropertyStatus, { nullable: true })
-	propertyStatus?: PropertyStatus;
+	@Field(() => CourseStatus, { nullable: true })
+	courseStatus?: CourseStatus;
 }
 
 @InputType()
-export class AgentPropertiesInquiry {
+export class InstructorCourseInquiry {
 	@IsNotEmpty()
 	@Min(1)
 	@Field(() => Int)
@@ -185,7 +163,7 @@ export class AgentPropertiesInquiry {
 	limit: number;
 
 	@IsOptional()
-	@IsIn(availablePropertySorts)
+	@IsIn(availableCourseSorts)
 	@Field(() => String, { nullable: true })
 	sort?: string;
 
@@ -201,16 +179,16 @@ export class AgentPropertiesInquiry {
 @InputType()
 export class ALPISearch {
 	@IsOptional()
-	@Field(() => PropertyStatus, { nullable: true })
-	propertyStatus?: PropertyStatus;
+	@Field(() => CourseStatus, { nullable: true })
+	courseStatus?: CourseStatus;
 
 	@IsOptional()
-	@Field(() => [PropertyLocation], { nullable: true })
-	propertyLocationList?: PropertyLocation[];
+	@Field(() => [CourseCategory], { nullable: true })
+	courseCategory?: CourseCategory[];
 }
 
 @InputType()
-export class AllPropertiesInquiry {
+export class AllCoursesInquiry {
 	@IsNotEmpty()
 	@Min(1)
 	@Field(() => Int)
@@ -222,7 +200,7 @@ export class AllPropertiesInquiry {
 	limit: number;
 
 	@IsOptional()
-	@IsIn(availablePropertySorts)
+	@IsIn(availableCourseSorts)
 	@Field(() => String, { nullable: true })
 	sort?: string;
 
