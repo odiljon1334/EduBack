@@ -135,25 +135,21 @@ export class CourseService {
 	}
 
 	public async getVisited(memberId: ObjectId, input: OrdinaryInquiry): Promise<CoursesList> {
-		return await this.viewService.getVisitedProperties(memberId, input);
+		const result = await this.viewService.getVisitedCourses(memberId, input);
+		return result;
 	}
 
 	private shapeMatchQuery(match: T, input: CoursesInquiry): void {
-		const { memberId, categoryList, typeList, options, text } = input.search;
+		const { memberId, categoryList, typeList, text } = input.search;
 
 		if (memberId) match.memberId = shapeIntoMongoObjectId(memberId);
 		if (categoryList && categoryList.length) match.courseCategory = { $in: categoryList };
 		if (typeList && typeList.length) match.courseType = { $in: typeList };
 
 		if (text) match.courseTitle = { $regex: new RegExp(text, 'i') };
-		if (options) {
-			match['$or'] = options.map((ele) => {
-				return { [ele]: true };
-			});
-		}
 	}
 
-	public async getInstructorCourse(memberId: ObjectId, input: InstructorCourseInquiry): Promise<CoursesList> {
+	public async getInstructorCourses(memberId: ObjectId, input: InstructorCourseInquiry): Promise<CoursesList> {
 		const { courseStatus } = input.search;
 		if (courseStatus === CourseStatus.DELETE) throw new InternalServerErrorException(Message.NOT_ALLOWED_REQUEST);
 

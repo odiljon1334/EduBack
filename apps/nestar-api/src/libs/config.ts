@@ -3,14 +3,13 @@ import { ObjectId } from 'bson';
 export const availableAgentSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews', 'memberRank'];
 export const availableMembersSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews'];
 
-export const availableOptions = ['propertyBarter', 'propertyRent'];
 export const availableCourseSorts = [
 	'createdAt',
 	'updatedAt',
-	'propertyLikes',
-	'propertyViews',
-	'propertyRank',
-	'propertyPrice',
+	'courseLikes',
+	'courseViews',
+	'courseRank',
+	'coursePrice',
 ];
 
 export const availableCommentSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews'];
@@ -133,17 +132,17 @@ export const lookupFollowerData = {
 export const lookupFavorite = {
 	$lookup: {
 		from: 'members',
-		localField: 'favoriteProperty.memberId',
+		localField: 'favoriteCourse.memberId',
 		foreignField: '_id',
-		as: 'favoriteProperty.memberData',
+		as: 'favoriteCourse.memberData',
 	},
 };
 
 export const lookupVisited = {
 	$lookup: {
 		from: 'members',
-		localField: 'visitedProperty.memberId',
+		localField: 'visitedCourse.memberId',
 		foreignField: '_id',
-		as: 'visitedProperty.memberData',
+		as: 'visitedCourse.memberData',
 	},
 };

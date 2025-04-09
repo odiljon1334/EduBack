@@ -30,7 +30,7 @@ export class CourseResolver {
 		@Args('input') input: CourseInput,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<Courses> {
-		console.log('Mutation: createCourse');
+		console.log('Mutation: createCourse', input);
 		input.memberId = memberId;
 
 		return await this.courseService.createCourse(input);
@@ -90,12 +90,12 @@ export class CourseResolver {
 	@Roles(MemberType.INSTRUCTOR)
 	@UseGuards(RolesGuard)
 	@Query((returns) => CoursesList)
-	public async getInstructorCourse(
+	public async getInstructorCourses(
 		@Args('input') input: InstructorCourseInquiry,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<CoursesList> {
 		console.log('Query: getInstructorCourse');
-		return await this.courseService.getInstructorCourse(memberId, input);
+		return await this.courseService.getInstructorCourses(memberId, input);
 	}
 
 	@UseGuards(AuthGuard)

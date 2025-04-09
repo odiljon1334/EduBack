@@ -4,13 +4,13 @@ import ModuleSchema from './Module.model';
 
 const CourseSchema = new Schema(
 	{
-		CourseType: {
+		courseType: {
 			type: String,
 			enum: CourseType,
 			required: true,
 		},
 
-		CourseStatus: {
+		courseStatus: {
 			type: String,
 			enum: CourseStatus,
 			default: CourseStatus.ACTIVE,

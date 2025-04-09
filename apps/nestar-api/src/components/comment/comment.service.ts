@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Comment, Comments } from '../../libs/dto/comment/comment';
 import { MemberService } from '../member/member.service';
-import { PropertyService } from '../course/course.service';
+import { CourseService } from '../course/course.service';
 import { BoardArticleService } from '../board-article/board-article.service';
 import { CommentInput, CommentsInquiry } from '../../libs/dto/comment/comment.input';
 import { Direction, Message } from '../../libs/enums/common.enum';
@@ -17,7 +17,7 @@ export class CommentService {
 	constructor(
 		@InjectModel('Comment') private readonly commentModel: Model<Comment>,
 		private readonly memberService: MemberService,
-		private readonly propertyService: PropertyService,
+		private readonly courseService: CourseService,
 		private readonly boardArticleService: BoardArticleService,
 	) {}
 
@@ -33,8 +33,8 @@ export class CommentService {
 		}
 
 		switch (input.commentGroup) {
-			case CommentGroup.PROPERTY:
-				await this.propertyService.propertyStatsEditor({
+			case CommentGroup.COURSE:
+				await this.courseService.courseStatsEditor({
 					_id: input.commentRefId,
 					targetKey: 'propertyComments',
 					modifier: 1,

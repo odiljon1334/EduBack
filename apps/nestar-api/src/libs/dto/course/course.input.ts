@@ -2,7 +2,7 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsIn, IsNotEmpty, IsOptional, Length, Min, ValidateNested } from 'class-validator';
 import { CourseCategory, CourseStatus, CourseType } from '../../enums/course.enum';
 import { ObjectId } from 'mongoose';
-import { availableOptions, availableCourseSorts } from '../../config';
+import { availableCourseSorts } from '../../config';
 import { Direction } from '../../enums/common.enum';
 import { Type } from 'class-transformer';
 
@@ -106,11 +106,6 @@ export class PISearch {
 	@IsOptional()
 	@Field(() => [CourseType], { nullable: true })
 	typeList?: CourseType[];
-
-	@IsOptional()
-	@IsIn(availableOptions, { each: true })
-	@Field(() => [String], { nullable: true })
-	options?: string[];
 
 	@IsOptional()
 	@Field(() => String, { nullable: true })
