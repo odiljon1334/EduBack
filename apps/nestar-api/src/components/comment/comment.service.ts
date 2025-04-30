@@ -11,6 +11,12 @@ import { CommentGroup, CommentStatus } from '../../libs/enums/comment.enum';
 import { CommentUpdate } from '../../libs/dto/comment/comment.update';
 import { lookupMember } from '../../libs/config';
 import { T } from '../../libs/types/common';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationGroup, NotificationType } from '../../libs/enums/notification.enum';
+import { CourseModule } from '../course/course.module';
+import { Courses } from '../../libs/dto/course/course';
+import { BoardArticle } from '../../libs/dto/board-article/board-article';
+import { Member } from '../../libs/dto/member/member';
 
 @Injectable()
 export class CommentService {
@@ -19,6 +25,7 @@ export class CommentService {
 		private readonly memberService: MemberService,
 		private readonly courseService: CourseService,
 		private readonly boardArticleService: BoardArticleService,
+		private notificationService: NotificationService,
 	) {}
 
 	public async createComment(memberId: ObjectId, input: CommentInput): Promise<Comment> {
@@ -34,24 +41,58 @@ export class CommentService {
 
 		switch (input.commentGroup) {
 			case CommentGroup.COURSE:
+				const targetCourse: Courses = await this.courseService.getCourse(memberId, input.commentRefId);
+				if (!targetCourse) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 				await this.courseService.courseStatsEditor({
 					_id: input.commentRefId,
 					targetKey: 'propertyComments',
 					modifier: 1,
 				});
+				await this.notificationService.createNotification({
+					authorId: input.memberId,
+					notificationGroup: NotificationGroup.COURSE,
+					notificationType: NotificationType.COMMENT,
+					notificationTitle: 'New comment on your course!',
+					notificationDesc: ` commented on your course, `,
+					courseId: input.commentRefId,
+					receiverId: targetCourse.memberId,
+				});
 				break;
 			case CommentGroup.ARTICLE:
+				const targetArticle: BoardArticle = await this.boardArticleService.getBoardArticle(
+					memberId,
+					input.commentRefId,
+				);
 				await this.boardArticleService.boardArticleStatsEditor({
 					_id: input.commentRefId,
 					targetKey: 'articleComments',
 					modifier: 1,
 				});
+				await this.notificationService.createNotification({
+					authorId: input.memberId,
+					notificationGroup: NotificationGroup.ARTICLE,
+					notificationType: NotificationType.COMMENT,
+					notificationTitle: 'New comment on your article!',
+					notificationDesc: ` commented on your article, `,
+					articleId: input.commentRefId,
+					receiverId: targetArticle.memberId,
+				});
 				break;
 			case CommentGroup.MEMBER:
+				const targetMember: Member = await this.memberService.getMember(memberId, input.commentRefId);
+				if (!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 				await this.memberService.memberStatsEditor({
 					_id: input.commentRefId,
 					targetKey: 'memberComments',
 					modifier: 1,
+				});
+				await this.notificationService.createNotification({
+					authorId: input.memberId,
+					notificationGroup: NotificationGroup.MEMBER,
+					notificationType: NotificationType.COMMENT,
+					notificationTitle: 'New comment on your profile!',
+					notificationDesc: ` commented on your profile, `,
+					receiverId: targetMember._id,
 				});
 			default:
 				break;

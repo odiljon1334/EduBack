@@ -7,10 +7,6 @@ const ModuleSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		moduleOrder: {
-			type: Number,
-			required: true,
-		},
 		lessons: {
 			type: [LessonSchema],
 		}, // Module ichida Lessonlar bo‘ladi

@@ -12,9 +12,6 @@ export class LessonDto {
 	@Field(() => String)
 	lessonTitle: string;
 
-	@Field(() => Int)
-	lessonOrder: number; // Modul ichida lessonlar tartib raqami
-
 	@Field(() => String)
 	lessonVideo: string; // Videoga link
 
@@ -32,9 +29,6 @@ export class ModuleDto {
 
 	@Field(() => String)
 	moduleTitle: string;
-
-	@Field(() => Int)
-	moduleOrder: number;
 
 	@Field(() => [LessonDto])
 	lessons: LessonDto[];

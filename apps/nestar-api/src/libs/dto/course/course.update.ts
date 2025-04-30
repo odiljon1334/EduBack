@@ -19,10 +19,6 @@ export class LessonDtoUpdate {
 	lessonDuration?: number;
 
 	@IsOptional()
-	@Field(() => Int, { nullable: true })
-	lessonOrder?: number; // Modul ichida lessonlar tartib raqami
-
-	@IsOptional()
 	@Field(() => Boolean, { nullable: true })
 	completedLesson?: boolean;
 }
@@ -32,10 +28,6 @@ export class ModuleDtoUpdate {
 	@IsOptional()
 	@Field(() => String, { nullable: true })
 	moduleTitle?: string;
-
-	@IsOptional()
-	@Field(() => Int, { nullable: true })
-	moduleOrder?: number;
 
 	@IsOptional()
 	@ValidateNested({ each: true })

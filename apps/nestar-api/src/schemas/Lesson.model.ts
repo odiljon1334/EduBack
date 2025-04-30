@@ -17,11 +17,6 @@ const LessonSchema = new Schema(
 			required: true,
 		},
 
-		lessonOrder: {
-			type: Number,
-			required: true,
-		}, // Modul ichida lessonlar tartib raqami
-
 		completedLesson: {
 			type: Boolean,
 			default: false,

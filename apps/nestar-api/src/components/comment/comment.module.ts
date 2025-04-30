@@ -7,6 +7,8 @@ import { MemberModule } from '../member/member.module';
 import CommentSchema from '../../schemas/Comment.model';
 import { CourseModule } from '../course/course.module';
 import { BoardArticleModule } from '../board-article/board-article.module';
+import { NotificationModule } from '../notification/notification.module';
+import CourseSchema from '../../schemas/Courses.model';
 
 @Module({
 	imports: [
@@ -15,11 +17,13 @@ import { BoardArticleModule } from '../board-article/board-article.module';
 				name: 'Comment',
 				schema: CommentSchema,
 			},
+			{ name: 'Course', schema: CourseSchema },
 		]),
+		CourseModule,
 		AuthModule,
 		MemberModule,
-		CourseModule,
 		BoardArticleModule,
+		NotificationModule,
 	],
 	providers: [CommentResolver, CommentService],
 })

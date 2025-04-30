@@ -12,6 +12,8 @@ export const availableCourseSorts = [
 	'coursePrice',
 ];
 
+export const availableNotifSorts = ['createdAt', 'updatedAt'];
+
 export const availableCommentSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews'];
 export const availableBoardArticleSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews'];
 
@@ -100,6 +102,33 @@ export const lookupAuthMemberFollowed = (input: LookupAuthMemberFollowed) => {
 			as: 'meFollowed',
 		},
 	};
+};
+
+export const lookUpCourse = {
+	$lookup: {
+		from: 'courses',
+		localField: 'courseId',
+		foreignField: '_id',
+		as: 'courseData',
+	},
+};
+
+export const lookUpBoardArticle = {
+	$lookup: {
+		from: 'boardArticles',
+		localField: 'articleId',
+		foreignField: '_id',
+		as: 'articleData',
+	},
+};
+
+export const lookUpReceiverData = {
+	$lookup: {
+		from: 'members',
+		localField: 'receiverId',
+		foreignField: '_id',
+		as: 'receiverData',
+	},
 };
 
 export const lookupMember = {

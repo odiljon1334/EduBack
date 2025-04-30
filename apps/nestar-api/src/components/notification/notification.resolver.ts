@@ -1,0 +1,34 @@
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { NotificationService } from './notification.service';
+import { Notification, NotifList } from '../../libs/dto/notification/notification';
+import { NotifInquiry } from '../../libs/dto/notification/notification.input';
+import { AuthMember } from '../auth/decorators/authMember.decorator';
+import { ObjectId } from 'mongoose';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { MemberType } from '../../libs/enums/member.enum';
+import { NotificationUpdate } from '../../libs/dto/notification/notification.update';
+
+@Resolver()
+export class NotificationResolver {
+	constructor(private readonly notificationService: NotificationService) {}
+
+	@Roles(MemberType.INSTRUCTOR || MemberType.ADMIN)
+	@Query(() => NotifList)
+	public async getCourseNotifications(
+		@Args('input') input: NotifInquiry,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<NotifList> {
+		console.log('Mutation: getCourseNotifications');
+		return await this.notificationService.getCourseNotifications(memberId, input);
+	}
+
+	@Roles(MemberType.INSTRUCTOR)
+	@Mutation(() => Notification)
+	public async updateNotification(
+		@Args('input') input: NotificationUpdate,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<Notification> {
+		console.log('Mutation: updateNotification');
+		return await this.notificationService.updateNotification(input);
+	}
+}

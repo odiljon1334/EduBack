@@ -186,11 +186,12 @@ export class CourseService {
 			.findOne({ _id: likeRefId, courseStatus: CourseStatus.ACTIVE })
 			.exec();
 		if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-
 		const input: LikeInput = {
 			memberId: memberId,
 			likeRefId: likeRefId,
 			likeGroup: LikeGroup.COURSE,
+			receiverId: target.memberId,
+			title: target.courseTitle,
 		};
 
 		const modifier: number = await this.likeService.toggleLike(input);

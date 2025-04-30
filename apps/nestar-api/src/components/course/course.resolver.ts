@@ -30,8 +30,8 @@ export class CourseResolver {
 		@Args('input') input: CourseInput,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<Courses> {
-		console.log('Mutation: createCourse', input);
 		input.memberId = memberId;
+		console.log('Mutation: createCourse', input);
 
 		return await this.courseService.createCourse(input);
 	}

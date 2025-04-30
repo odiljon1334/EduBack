@@ -20,10 +20,6 @@ export class LessonDto {
 	@Field(() => Int)
 	lessonDuration: number;
 
-	@IsNotEmpty()
-	@Field(() => Int)
-	lessonOrder: number; // Modul ichida lessonlar tartib raqami
-
 	@IsOptional()
 	@Field(() => Boolean, { nullable: true })
 	completedLesson?: boolean;
@@ -34,10 +30,6 @@ export class ModuleDto {
 	@IsNotEmpty()
 	@Field(() => String)
 	moduleTitle: string;
-
-	@IsNotEmpty()
-	@Field(() => Int)
-	moduleOrder: number;
 
 	@ValidateNested({ each: true })
 	@Field(() => [LessonDto])
@@ -219,4 +211,23 @@ export class OrdinaryInquiry {
 	@Min(1)
 	@Field(() => Int)
 	limit: number;
+}
+
+@InputType()
+export class DeleteNotification {
+	@IsNotEmpty()
+	@Field(() => String)
+	authorId: ObjectId;
+
+	@IsOptional()
+	@Field(() => String, { nullable: true })
+	receiverId?: ObjectId;
+
+	@IsOptional()
+	@Field(() => String, { nullable: true })
+	courseId?: ObjectId;
+
+	@IsOptional()
+	@Field(() => String, { nullable: true })
+	articleId?: ObjectId;
 }
