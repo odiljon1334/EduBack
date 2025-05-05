@@ -1,6 +1,7 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ObjectId } from 'mongoose';
 import { NoticeCategory, NoticeStatus } from '../../enums/notice.enum';
+import { Member } from '../member/member';
 
 @ObjectType()
 export class Notice {
@@ -19,8 +20,14 @@ export class Notice {
 	@Field(() => String)
 	noticeContent: string;
 
+	@Field(() => Boolean, { nullable: true })
+	event?: boolean;
+
 	@Field(() => String)
 	memberId: ObjectId;
+
+	@Field(() => Member, { nullable: true })
+	memberData?: Member;
 
 	@Field(() => Date, { nullable: true })
 	constructedAt?: Date;
@@ -33,4 +40,19 @@ export class Notice {
 
 	@Field(() => Date, { nullable: true })
 	deletedAt?: Date;
+}
+
+@ObjectType()
+export class TotalNoticeCounter {
+	@Field(() => Int, { nullable: true })
+	total: number;
+}
+
+@ObjectType()
+export class NoticeList {
+	@Field(() => [Notice])
+	list: Notice[];
+
+	@Field(() => [TotalNoticeCounter], { nullable: true })
+	metaCounter: TotalNoticeCounter[];
 }

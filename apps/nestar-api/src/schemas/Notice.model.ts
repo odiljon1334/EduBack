@@ -20,11 +20,16 @@ const NoticeSchema = new Schema(
 			required: true,
 		},
 
+		event: {
+			type: Boolean,
+			default: false,
+		},
+
 		noticeContent: {
 			type: String,
 			required: true,
 		},
-		
+
 		memberId: {
 			type: Schema.Types.ObjectId,
 			required: true,

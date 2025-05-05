@@ -7,7 +7,6 @@ import { AuthModule } from '../auth/auth.module';
 import { ViewModule } from '../view/view.module';
 import { MemberModule } from '../member/member.module';
 import { LikeModule } from '../like/like.module';
-import { NotificationModule } from '../notification/notification.module';
 import { Schema } from 'mongoose';
 
 @Module({

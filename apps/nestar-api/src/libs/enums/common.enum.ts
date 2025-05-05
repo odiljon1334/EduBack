@@ -20,6 +20,8 @@ export enum Message {
 	PROVIDE_ALLOWED_FORMAT = 'Please provide jpg, jpeg or png images!',
 	SELF_SUBSCRIPTION_DENIED = 'Self subscription is denied!',
 	PROVIDE_INSTRUCTOR_POSITION = 'Please provide instructor position!',
+	DELETE_FAILED = 'DELETE_FAILED',
+	GET_FAILED = 'GET_FAILED',
 }
 
 export enum Direction {
