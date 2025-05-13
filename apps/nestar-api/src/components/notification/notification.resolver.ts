@@ -7,22 +7,26 @@ import { ObjectId } from 'mongoose';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { MemberType } from '../../libs/enums/member.enum';
 import { NotificationUpdate } from '../../libs/dto/notification/notification.update';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { WithoutGuard } from '../auth/guards/without.guard';
 
 @Resolver()
 export class NotificationResolver {
 	constructor(private readonly notificationService: NotificationService) {}
 
-	@Roles(MemberType.INSTRUCTOR || MemberType.ADMIN)
-	@Query(() => NotifList)
+	@UseGuards(WithoutGuard)
+	@Query((returns) => NotifList)
 	public async getCourseNotifications(
 		@Args('input') input: NotifInquiry,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<NotifList> {
-		console.log('Mutation: getCourseNotifications');
+		console.log('getCourseNotifications');
 		return await this.notificationService.getCourseNotifications(memberId, input);
 	}
 
 	@Roles(MemberType.INSTRUCTOR)
+	@UseGuards(RolesGuard)
 	@Mutation(() => Notification)
 	public async updateNotification(
 		@Args('input') input: NotificationUpdate,

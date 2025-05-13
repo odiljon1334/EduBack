@@ -61,7 +61,7 @@ export class CourseInput {
 	courseImage: string;
 
 	@IsOptional()
-	@Length(5, 500)
+	@Length(5, 2500)
 	@Field(() => String, { nullable: true })
 	courseDesc?: string;
 

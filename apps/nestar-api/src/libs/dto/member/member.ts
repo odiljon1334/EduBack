@@ -27,6 +27,7 @@ export class Member {
 	@Field(() => MemberPosition)
 	memberPosition?: MemberPosition;
 
+	@Field(() => String, { nullable: true })
 	memberPassword?: string;
 
 	@Field(() => String, { nullable: true })

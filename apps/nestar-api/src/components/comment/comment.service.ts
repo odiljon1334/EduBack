@@ -42,6 +42,9 @@ export class CommentService {
 		switch (input.commentGroup) {
 			case CommentGroup.COURSE:
 				const targetCourse: Courses = await this.courseService.getCourse(memberId, input.commentRefId);
+				const targetId = input.memberId;
+				const members: Member = await this.memberService.getMember(memberId, targetId);
+				console.log('members:', members);
 				if (!targetCourse) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 				await this.courseService.courseStatsEditor({
 					_id: input.commentRefId,
@@ -53,7 +56,7 @@ export class CommentService {
 					notificationGroup: NotificationGroup.COURSE,
 					notificationType: NotificationType.COMMENT,
 					notificationTitle: 'New comment on your course!',
-					notificationDesc: ` commented on your course, `,
+					notificationDesc: ` commented on your course, ${targetCourse.courseTitle}`,
 					courseId: input.commentRefId,
 					receiverId: targetCourse.memberId,
 				});

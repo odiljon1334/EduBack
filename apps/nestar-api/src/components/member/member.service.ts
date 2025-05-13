@@ -58,6 +58,7 @@ export class MemberService {
 	}
 
 	public async updateMember(memberId: ObjectId, input: MemberUpdate): Promise<Member> {
+		input.memberPassword = await this.authService.hashPassword(input.memberPassword);
 		const result: Member = await this.memberModel
 			.findOneAndUpdate(
 				{
@@ -183,6 +184,7 @@ export class MemberService {
 	}
 
 	public async updateMemberByAdmin(input: MemberUpdate): Promise<Member> {
+		input.memberPassword = await this.authService.hashPassword(input.memberPassword);
 		const result: Member = await this.memberModel.findOneAndUpdate({ _id: input._id }, input, { new: true }).exec();
 		if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
 
