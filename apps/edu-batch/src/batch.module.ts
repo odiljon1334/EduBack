@@ -5,15 +5,15 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
-import PropertySchema from 'apps/edu-campus/src/schemas/Courses.model';
-import MemberSchema from 'apps/edu-campus/src/schemas/Member.model';
+import MemberSchema from 'apps/edu-api/src/schemas/Member.model';
+import CourseSchema from 'apps/edu-api/src/schemas/Courses.model';
 
 @Module({
 	imports: [
 		ConfigModule.forRoot(),
 		DatabaseModule,
 		ScheduleModule.forRoot(),
-		MongooseModule.forFeature([{ name: 'Property', schema: PropertySchema }]),
+		MongooseModule.forFeature([{ name: 'Course', schema: CourseSchema }]),
 		MongooseModule.forFeature([{ name: 'Member', schema: MemberSchema }]),
 	],
 	controllers: [BatchController],

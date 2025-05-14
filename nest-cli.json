@@ -1,31 +1,31 @@
 {
 	"$schema": "https://json.schemastore.org/nest-cli",
 	"collection": "@nestjs/schematics",
-	"sourceRoot": "apps/edu-campus/src",
+	"sourceRoot": "apps/edu-api/src",
 	"compilerOptions": {
 		"deleteOutDir": true,
 		"webpack": true,
-		"tsConfigPath": "apps/edu-campus/tsconfig.app.json"
+		"tsConfigPath": "apps/edu-api/tsconfig.app.json"
 	},
 	"monorepo": true,
-	"root": "apps/edu-campus",
+	"root": "apps/edu-api",
 	"projects": {
-		"edu-campus": {
+		"edu-api": {
 			"type": "application",
-			"root": "apps/edu-campus",
+			"root": "apps/edu-api",
 			"entryFile": "main",
-			"sourceRoot": "apps/edu-campus/src",
+			"sourceRoot": "apps/edu-api/src",
 			"compilerOptions": {
-				"tsConfigPath": "apps/edu-campus/tsconfig.app.json"
+				"tsConfigPath": "apps/edu-api/tsconfig.app.json"
 			}
 		},
-		"nestar-batch": {
+		"edu-batch": {
 			"type": "application",
-			"root": "apps/nestar-batch",
+			"root": "apps/edu-batch",
 			"entryFile": "main",
-			"sourceRoot": "apps/nestar-batch/src",
+			"sourceRoot": "apps/edu-batch/src",
 			"compilerOptions": {
-				"tsConfigPath": "apps/nestar-batch/tsconfig.app.json"
+				"tsConfigPath": "apps/edu-batch/tsconfig.app.json"
 			}
 		}
 	}
