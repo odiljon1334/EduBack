@@ -63,7 +63,7 @@ export class CourseResolver {
 		@Args('input') input: CoursesInquiry,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<CoursesList> {
-		console.log('Query: getCourses', memberId);
+		console.log('Query: getCourses');
 		return await this.courseService.getCourses(memberId, input);
 	}
 

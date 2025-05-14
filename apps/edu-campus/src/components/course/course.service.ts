@@ -106,7 +106,6 @@ export class CourseService {
 		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
 
 		this.shapeMatchQuery(match, input);
-		console.log('match:', match);
 
 		const result = await this.courseModel
 			.aggregate([
