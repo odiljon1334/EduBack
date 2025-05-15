@@ -7,17 +7,13 @@ services:
     ports:
       - 4001:3007
     volumes:
-      - ./:/usr/src/app
-    working_dir: /usr/src/app
+      - ./:/usr/src/edu
+    working_dir: /usr/src/edu
 
     networks:
       - monorepo-network
 
-    command: >
-      bash -c "npm install && 
-      npm install -g @nestjs/cli && 
-      npx nest build edu-api && 
-      NODE_ENV=production node dist/apps/edu-api/main.js"
+    command: bash -c "rm -rf dist && npm install && npm run build && npm run start:prod"
 
   edu-batch:
     container_name: edu-batch
@@ -26,17 +22,13 @@ services:
     ports:
       - 4002:3008
     volumes:
-      - ./:/usr/src/app
-    working_dir: /usr/src/app
+      - ./:/usr/src/edu
+    working_dir: /usr/src/edu
 
     networks:
       - monorepo-network
 
-    command: >
-      bash -c "npm install && 
-      npm install -g @nestjs/cli && 
-      npx nest build edu-batch && 
-      node dist/apps/edu-batch/main.js"
+    command: bash -c "npm install && npm run build && npm run start:prod:batch"
 
 networks:
   monorepo-network:
