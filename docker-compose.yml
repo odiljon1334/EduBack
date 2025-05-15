@@ -1,4 +1,3 @@
-version: '3.3'
 services:
   edu-api:
     container_name: edu-api

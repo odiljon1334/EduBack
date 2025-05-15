@@ -13,7 +13,7 @@
 		"start:dev:batch": "nest start edu-batch --watch",
 		"start:debug": "nest start --debug --watch",
 		"start:prod": "NODE_ENV=production node dist/apps/edu-api/main.js",
-		"start:prod:batch": "node dist/apps/edu-batch/main.js",
+		"start:prod:batch": "NODE_ENV=production node dist/apps/edu-batch/main.js",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
 		"test": "jest",
 		"test:watch": "jest --watch",
