@@ -7,7 +7,7 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { MemberType } from '../../libs/enums/member.enum';
+import { MemberPosition, MemberType } from '../../libs/enums/member.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
 import { getSerialForFile, shapeIntoMongoObjectId, validMimeTypes } from '../../libs/config';
@@ -22,6 +22,14 @@ export class MemberResolver {
 
 	@Mutation(() => Member)
 	public async signup(@Args('input') input: MemberInput): Promise<Member> {
+		if (!input.memberPosition) {
+			input.memberPosition = MemberPosition.STUDENT;
+		}
+
+		if (input.memberType === MemberType.INSTRUCTOR && input.memberPosition) {
+			throw new Error(Message.PROVIDE_INSTRUCTOR_POSITION);
+		}
+
 		console.log('Mutation: signup');
 		return await this.memberService.signup(input);
 	}

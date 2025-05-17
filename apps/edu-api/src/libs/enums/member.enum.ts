@@ -40,6 +40,7 @@ export enum MemberPosition {
 	DEVOPS_ENGINEER = 'DEVOPS_ENGINEER',
 	GAME_DEVELOPER = 'GAME_DEVELOPER',
 	MACHINE_LEARNING_ENGINEER = 'MACHINE_LEARNING_ENGINEER',
+	STUDENT = 'STUDENT',
 }
 registerEnumType(MemberPosition, {
 	name: 'MemberPosition',
