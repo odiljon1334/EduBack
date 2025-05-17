@@ -22,8 +22,7 @@ export class MemberResolver {
 
 	@Mutation(() => Member)
 	public async signup(@Args('input') input: MemberInput): Promise<Member> {
-		console.log('input: =>', input);
-		if (!input.memberType && input.memberPosition) {
+		if (input.memberType === MemberType.INSTRUCTOR && input.memberPosition) {
 			throw new Error(Message.PROVIDE_INSTRUCTOR_POSITION);
 		}
 		console.log('Mutation: signup');

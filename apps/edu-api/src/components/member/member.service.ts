@@ -31,6 +31,7 @@ export class MemberService {
 		try {
 			const result = await this.memberModel.create(input);
 			result.accessToken = await this.authService.createToken(result);
+			console.log('SignUp:result:', result);
 			return result;
 		} catch (err) {
 			console.log('Error, Service.model:', err.message);
