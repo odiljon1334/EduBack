@@ -11,7 +11,6 @@ import { LikeGroup } from '../../libs/enums/like.enum';
 import { lookupFavorite } from '../../libs/config';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationGroup, NotificationType } from '../../libs/enums/notification.enum';
-import e from 'express';
 
 @Injectable()
 export class LikeService {
@@ -24,7 +23,7 @@ export class LikeService {
 		const search: T = { memberId: input.memberId, likeRefId: input.likeRefId },
 			exist = await this.likeModel.findOne(search).exec();
 		let modifier = 1;
-		let match: DeleteNotification = { authorId: input.memberId };
+		const match: DeleteNotification = { authorId: input.memberId };
 
 		if (input?.likeGroup === LikeGroup.COURSE) {
 			match.courseId = input.likeRefId;

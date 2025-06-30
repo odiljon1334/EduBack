@@ -16,7 +16,7 @@ export class NotificationResolver {
 	constructor(private readonly notificationService: NotificationService) {}
 
 	@UseGuards(WithoutGuard)
-	@Query((returns) => NotifList)
+	@Query(() => NotifList)
 	public async getCourseNotifications(
 		@Args('input') input: NotifInquiry,
 		@AuthMember('_id') memberId: ObjectId,
@@ -28,10 +28,7 @@ export class NotificationResolver {
 	@Roles(MemberType.INSTRUCTOR)
 	@UseGuards(RolesGuard)
 	@Mutation(() => Notification)
-	public async updateNotification(
-		@Args('input') input: NotificationUpdate,
-		@AuthMember('_id') memberId: ObjectId,
-	): Promise<Notification> {
+	public async updateNotification(@Args('input') input: NotificationUpdate): Promise<Notification> {
 		console.log('Mutation: updateNotification');
 		return await this.notificationService.updateNotification(input);
 	}

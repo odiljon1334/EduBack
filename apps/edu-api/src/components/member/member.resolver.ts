@@ -7,7 +7,7 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { MemberPosition, MemberType } from '../../libs/enums/member.enum';
+import { MemberType } from '../../libs/enums/member.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
 import { getSerialForFile, shapeIntoMongoObjectId, validMimeTypes } from '../../libs/config';
@@ -110,7 +110,7 @@ export class MemberResolver {
 	/** IMAGE UPLOADER (member.resolver.ts)**/
 
 	@UseGuards(AuthGuard)
-	@Mutation((returns) => String)
+	@Mutation(() => String)
 	public async fileUploader(
 		@Args({ name: 'file', type: () => GraphQLUpload })
 		{ createReadStream, filename, mimetype }: FileUpload,
