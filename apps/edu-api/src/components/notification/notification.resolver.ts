@@ -1,7 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { NotificationService } from './notification.service';
 import { Notification, NotifList } from '../../libs/dto/notification/notification';
-import { NotifInquiry } from '../../libs/dto/notification/notification.input';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -17,12 +16,9 @@ export class NotificationResolver {
 
 	@UseGuards(WithoutGuard)
 	@Query(() => NotifList)
-	public async getCourseNotifications(
-		@Args('input') input: NotifInquiry,
-		@AuthMember('_id') memberId: ObjectId,
-	): Promise<NotifList> {
+	public async getNotifications(@AuthMember('_id') memberId: ObjectId): Promise<NotifList> {
 		console.log('getCourseNotifications');
-		return await this.notificationService.getCourseNotifications(memberId, input);
+		return await this.notificationService.getNotifications(memberId);
 	}
 
 	@Roles(MemberType.INSTRUCTOR)

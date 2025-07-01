@@ -13,7 +13,6 @@ import { lookupMember } from '../../libs/config';
 import { T } from '../../libs/types/common';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationGroup, NotificationType } from '../../libs/enums/notification.enum';
-import { CourseModule } from '../course/course.module';
 import { Courses } from '../../libs/dto/course/course';
 import { BoardArticle } from '../../libs/dto/board-article/board-article';
 import { Member } from '../../libs/dto/member/member';
@@ -76,7 +75,7 @@ export class CommentService {
 					notificationGroup: NotificationGroup.ARTICLE,
 					notificationType: NotificationType.COMMENT,
 					notificationTitle: 'New comment on your article!',
-					notificationDesc: ` commented on your article, `,
+					notificationDesc: ` commented on your article, ${targetArticle.articleTitle}`,
 					articleId: input.commentRefId,
 					receiverId: targetArticle.memberId,
 				});

@@ -1,4 +1,6 @@
 import { ObjectId } from 'bson';
+export const CACHE_TTL = 3600;
+import * as crypto from 'crypto';
 
 export const availableAgentSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews', 'memberRank'];
 export const availableMembersSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews'];
@@ -174,4 +176,8 @@ export const lookupVisited = {
 		foreignField: '_id',
 		as: 'visitedCourse.memberData',
 	},
+};
+
+export const hashCacheKey = (longStringKey: string): string => {
+	return crypto.createHash('md5').update(longStringKey).digest('hex');
 };

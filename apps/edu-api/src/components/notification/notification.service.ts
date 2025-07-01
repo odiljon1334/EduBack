@@ -1,24 +1,23 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Notification, NotifList } from '../../libs/dto/notification/notification';
-import { NotificationInput, NotifInquiry, Search } from '../../libs/dto/notification/notification.input';
-import { Model, ObjectId, Schema } from 'mongoose';
+import { NotificationInput } from '../../libs/dto/notification/notification.input';
+import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-	lookUpBoardArticle,
-	lookUpCourse,
-	lookupMember,
-	lookUpReceiverData,
-	shapeIntoMongoObjectId,
-} from '../../libs/config';
+import { shapeIntoMongoObjectId } from '../../libs/config';
 import { T } from '../../libs/types/common';
-import { NotificationGroup, NotificationStatus, NotificationType } from '../../libs/enums/notification.enum';
-import { Direction, Message } from '../../libs/enums/common.enum';
+import { NotificationStatus } from '../../libs/enums/notification.enum';
+import { Message } from '../../libs/enums/common.enum';
 import { DeleteNotification } from '../../libs/dto/course/course.input';
 import { NotificationUpdate } from '../../libs/dto/notification/notification.update';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class NotificationService {
-	constructor(@InjectModel('Notification') private readonly notificationModel: Model<Notification>) {}
+	constructor(
+		@InjectModel('Notification')
+		private readonly notificationModel: Model<Notification>,
+		private readonly eventEmitter: EventEmitter2,
+	) {}
 
 	public async createNotification(input: NotificationInput): Promise<Notification> {
 		try {
@@ -26,6 +25,7 @@ export class NotificationService {
 			if (!result) {
 				throw new BadRequestException(Message.CREATE_FAILED);
 			}
+			this.eventEmitter.emit('notification', result.receiverId);
 			return result;
 		} catch (err) {
 			console.log('Error, Service.model:', err.message);
@@ -33,55 +33,20 @@ export class NotificationService {
 		}
 	}
 
-	public async getCourseNotifications(memberId: ObjectId, input: NotifInquiry): Promise<NotifList> {
-		const { notificationType, notificationGroup } = input.search[0] as Search;
-
+	public async getNotifications(memberId: ObjectId): Promise<NotifList> {
 		const match: T = {
 			receiverId: memberId,
 			notificationStatus: NotificationStatus.WAIT,
 		};
-		if (notificationType) match.notificationType = { $in: notificationType };
-		if (notificationGroup) match.notificationGroup = { $in: notificationGroup };
-
-		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+		const sort: T = { createdAt: -1 };
 		// Dinamik lookuplar
-		const dynamicLookups: any[] = [];
-
-		// COURSE uchun
-		if (notificationGroup?.includes(NotificationGroup.COURSE)) {
-			dynamicLookups.push(lookUpCourse, { $unwind: '$courseData' });
-		}
-
-		// ARTICLE uchun
-		if (notificationGroup?.includes(NotificationGroup.ARTICLE)) {
-			dynamicLookups.push(lookUpBoardArticle, { $unwind: { path: '$articleData', preserveNullAndEmptyArrays: true } });
-		}
-
-		// MEMBER uchun (Like)
-		if (notificationGroup?.includes(NotificationGroup.MEMBER)) {
-			dynamicLookups.push(lookUpReceiverData, { $unwind: { path: '$memberData', preserveNullAndEmptyArrays: true } });
-		}
-
-		// Har doim qo‘shiladigan authorData
-		dynamicLookups.push(
-			{
-				$lookup: {
-					from: 'members',
-					localField: 'authorId',
-					foreignField: '_id',
-					as: 'authorData',
-				},
-			},
-			{ $unwind: '$authorData' },
-		);
-
-		const result = await this.notificationModel
+		const result: NotifList[] = await this.notificationModel
 			.aggregate([
 				{ $match: match },
 				{ $sort: sort },
 				{
 					$facet: {
-						list: [{ $skip: (input.page - 1) * input?.limit }, { $limit: input?.limit }, ...dynamicLookups],
+						list: [{ $skip: 0 }, { $limit: 100 }],
 						metaCounter: [{ $count: 'total' }],
 					},
 				},
@@ -109,7 +74,7 @@ export class NotificationService {
 	}
 
 	public async updateNotification(input: NotificationUpdate): Promise<Notification> {
-		const { receiverId, notificationStatus } = input;
+		const { receiverId } = input;
 
 		const search: T = {
 			receiverId: shapeIntoMongoObjectId(receiverId),
@@ -119,6 +84,7 @@ export class NotificationService {
 
 		const result = await this.notificationModel.findOneAndUpdate(search, input, { new: true }).exec();
 		if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
+		this.eventEmitter.emit('notification', result.receiverId);
 
 		return result;
 	}
