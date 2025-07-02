@@ -3,7 +3,13 @@ import { Notification, NotifList } from '../../libs/dto/notification/notificatio
 import { NotificationInput } from '../../libs/dto/notification/notification.input';
 import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { shapeIntoMongoObjectId } from '../../libs/config';
+import {
+	lookUpArticle,
+	lookUpAuthorData,
+	lookUpCourse,
+	lookUpMemberNotification,
+	shapeIntoMongoObjectId,
+} from '../../libs/config';
 import { T } from '../../libs/types/common';
 import { NotificationStatus } from '../../libs/enums/notification.enum';
 import { Message } from '../../libs/enums/common.enum';
@@ -39,14 +45,25 @@ export class NotificationService {
 			notificationStatus: NotificationStatus.WAIT,
 		};
 		const sort: T = { createdAt: -1 };
-		// Dinamik lookuplar
+
 		const result: NotifList[] = await this.notificationModel
 			.aggregate([
 				{ $match: match },
 				{ $sort: sort },
 				{
 					$facet: {
-						list: [{ $skip: 0 }, { $limit: 100 }],
+						list: [
+							{ $skip: 0 },
+							{ $limit: 100 },
+							lookUpAuthorData,
+							{ $unwind: '$authorData' },
+							lookUpCourse,
+							{ $unwind: '$courseData' },
+							lookUpArticle,
+							{ $unwind: { path: '$articleData', preserveNullAndEmptyArrays: true } },
+							lookUpMemberNotification,
+							{ $unwind: { path: '$memberData', preserveNullAndEmptyArrays: true } },
+						],
 						metaCounter: [{ $count: 'total' }],
 					},
 				},

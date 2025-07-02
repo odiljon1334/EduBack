@@ -115,6 +115,33 @@ export const lookUpCourse = {
 	},
 };
 
+export const lookUpArticle = {
+	$lookup: {
+		from: 'articles',
+		localField: 'articleId',
+		foreignField: '_id',
+		as: 'articleData',
+	},
+};
+
+export const lookUpAuthorData = {
+	$lookup: {
+		from: 'members',
+		localField: 'authorId',
+		foreignField: '_id',
+		as: 'authorData',
+	},
+};
+
+export const lookUpMemberNotification = {
+	$lookup: {
+		from: 'members',
+		localField: 'propertyId',
+		foreignField: '_id',
+		as: 'memberData',
+	},
+};
+
 export const lookUpBoardArticle = {
 	$lookup: {
 		from: 'boardArticles',
