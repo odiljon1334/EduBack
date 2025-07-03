@@ -40,7 +40,7 @@ export class FollowService {
 			notificationGroup: NotificationGroup.MEMBER,
 			notificationType: NotificationType.FOLLOW,
 			notificationTitle: 'You have a new follower!',
-			notificationDesc: 'Someone started following you',
+			notificationDesc: ' started following you',
 			authorId: followerId,
 			receiverId: followingId,
 		};
