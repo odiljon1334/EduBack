@@ -7,7 +7,7 @@ import {
 	lookUpArticle,
 	lookUpAuthorData,
 	lookUpCourse,
-	lookupFollowerData,
+	lookupFollowerNotitifcation,
 	lookUpMemberNotification,
 	shapeIntoMongoObjectId,
 } from '../../libs/config';
@@ -64,7 +64,7 @@ export class NotificationService {
 							{ $unwind: { path: '$articleData', preserveNullAndEmptyArrays: true } },
 							lookUpMemberNotification,
 							{ $unwind: { path: '$memberData', preserveNullAndEmptyArrays: true } },
-							lookupFollowerData,
+							lookupFollowerNotitifcation,
 							{ $unwind: { path: '$followData', preserveNullAndEmptyArrays: true } },
 						],
 						metaCounter: [{ $count: 'total' }],
