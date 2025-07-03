@@ -187,6 +187,15 @@ export const lookupFollowerData = {
 	},
 };
 
+export const lookupFollowerNotitifcation = {
+	$lookup: {
+		from: 'members',
+		localField: 'followerId',
+		foreignField: '_id',
+		as: 'followData',
+	},
+};
+
 export const lookupFavorite = {
 	$lookup: {
 		from: 'members',
