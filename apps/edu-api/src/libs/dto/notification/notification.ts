@@ -51,7 +51,7 @@ export class Notification {
 	articleData?: BoardArticle;
 
 	@Field(() => Follower, { nullable: true })
-	followsData?: Follower;
+	followData?: Follower;
 
 	@Field()
 	createdAt: Date;
