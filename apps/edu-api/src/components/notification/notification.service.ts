@@ -3,13 +3,7 @@ import { Notification, NotifList } from '../../libs/dto/notification/notificatio
 import { NotificationInput } from '../../libs/dto/notification/notification.input';
 import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-	lookUpArticle,
-	lookUpAuthorData,
-	lookUpCourse,
-	lookUpMemberNotification,
-	shapeIntoMongoObjectId,
-} from '../../libs/config';
+import { lookUpArticle, lookUpAuthorData, lookUpCourse, shapeIntoMongoObjectId } from '../../libs/config';
 import { T } from '../../libs/types/common';
 import { NotificationStatus } from '../../libs/enums/notification.enum';
 import { Message } from '../../libs/enums/common.enum';
@@ -56,19 +50,19 @@ export class NotificationService {
 							{ $skip: 0 },
 							{ $limit: 100 },
 							lookUpAuthorData,
-							{ $unwind: '$authorData' },
+							{ $unwind: { path: '$authorData', preserveNullAndEmptyArrays: true } },
 							lookUpCourse,
-							{ $unwind: '$courseData' },
+							{ $unwind: { path: '$courseData', preserveNullAndEmptyArrays: true } },
 							lookUpArticle,
 							{ $unwind: { path: '$articleData', preserveNullAndEmptyArrays: true } },
-							lookUpMemberNotification,
-							{ $unwind: { path: '$memberData', preserveNullAndEmptyArrays: true } },
+							// lookUpMemberNotification ni olib tashlang (duplicate)
 						],
 						metaCounter: [{ $count: 'total' }],
 					},
 				},
 			])
 			.exec();
+
 		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 		return result[0];
 	}
