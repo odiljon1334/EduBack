@@ -49,9 +49,6 @@ export class Notification {
 	@Field(() => BoardArticle, { nullable: true })
 	articleData?: BoardArticle;
 
-	@Field(() => Member, { nullable: true })
-	followData?: Member;
-
 	@Field()
 	createdAt: Date;
 
