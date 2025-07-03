@@ -4,6 +4,7 @@ import { NotificationGroup, NotificationStatus, NotificationType } from '../../e
 import { Member, TotalCounter } from '../member/member';
 import { Courses } from '../course/course';
 import { BoardArticle } from '../board-article/board-article';
+import { Follower } from '../follow/follow';
 
 @ObjectType()
 export class Notification {
@@ -48,6 +49,9 @@ export class Notification {
 
 	@Field(() => BoardArticle, { nullable: true })
 	articleData?: BoardArticle;
+
+	@Field(() => Follower, { nullable: true })
+	followsData?: Follower;
 
 	@Field()
 	createdAt: Date;
