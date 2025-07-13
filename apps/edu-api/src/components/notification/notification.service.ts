@@ -85,15 +85,16 @@ export class NotificationService {
 	}
 
 	public async updateNotification(input: NotificationUpdate): Promise<Notification> {
-		const { receiverId } = input;
+		const { receiverId, _id } = input;
 
 		const search: T = {
+			_id: _id,
 			receiverId: shapeIntoMongoObjectId(receiverId),
 			notificationStatus: NotificationStatus.WAIT,
 		};
 		console.log('updateNotification', search);
 
-		const result = await this.notificationModel.findOneAndUpdate(search, input, { new: true }).exec();
+		const result = await this.notificationModel.findByIdAndUpdate(search, input, { new: true }).exec();
 		if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
 		this.eventEmitter.emit('notification', result.receiverId);
 

@@ -7,6 +7,10 @@ import { NotificationStatus } from '../../enums/notification.enum';
 export class NotificationUpdate {
 	@IsNotEmpty()
 	@Field(() => String)
+	_id: ObjectId;
+
+	@IsNotEmpty()
+	@Field(() => String)
 	receiverId: ObjectId;
 
 	@IsNotEmpty()
